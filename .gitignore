@@ -1,0 +1,8 @@
+# Project place file
+/DatastoreBase.rbxlx
+Packages/
+Builds/
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock

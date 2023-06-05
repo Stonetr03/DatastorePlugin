@@ -1,0 +1,20 @@
+{
+  "name": "Datastore - Plugin",
+  "tree": {
+    "$className": "DataModel",
+
+    "StarterGui": {
+      "Plugin": {
+        "$className": "Folder",
+        "Main": {
+          "$path": "src",
+  
+          "Packages": {
+            "$path": "Packages"
+          }
+        }
+      }
+    }
+
+  }
+}
