@@ -2,6 +2,8 @@
 
 Datastore Plugin is a Datastore Editor Plugin for roblox and uses [Datastore Base by Stonetr03](https://github.com/Stonetr03/DatastoreBase), and [Fusion by Elttob](https://elttob.uk/Fusion/).
 
+Get the plugin on [Roblox Marketplace](https://create.roblox.com/marketplace/asset/13657268667).
+
 ## Build Info
 
 To build the code, get the required packages from wally using
