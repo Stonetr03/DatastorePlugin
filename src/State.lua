@@ -2,7 +2,9 @@
 
 local Config = require(script.Parent:WaitForChild("Config"));
 local Fusion = Config.Fusion
-local DataStore = require(script.Parent:WaitForChild("Datastore"))
+local DataStore = require(script.Parent:WaitForChild("Datastore"));
+local RunService = game:GetService("RunService");
+local StarterPack = game:GetService("StarterPack")
 
 local Value = Fusion.Value
 
@@ -16,6 +18,9 @@ local Module = {
 
     CurrentData = Value({});
     OriginalData = Value({});
+
+    IsSaving = Value(false);
+    SaveSpin = Value(0);
 }
 
 function Module:RemoveDataStore()
@@ -46,6 +51,7 @@ function Module:GetDataStore(Name,Scope,props)
     elseif s == false then
         -- Error Ui
         props.Error:set(401)
+        print(props.Error:get())
         return false
     end
 
@@ -137,15 +143,45 @@ function Module:UpdateKey(NewValue)
     end
 end
 
+-- Save Icon
+local Spin = coroutine.create(function()
+    RunService.RenderStepped:Connect(function()
+        Module.SaveSpin:set(os.clock())
+        if Module.IsSaving:get() == false then
+            coroutine.yield()
+        end
+    end)
+end)
+
 function Module:SaveKey()
-    if Module.CurrentKey:get() ~= "" and CompareTables(Module.CurrentData:get(),Module.OriginalData:get()) == false then
+    if Module.CurrentKey:get() ~= "" and CompareTables(Module.CurrentData:get(),Module.OriginalData:get()) == false and Module.IsSaving:get() ~= true then
         -- Save Data
+        Module.IsSaving:set(true)
+        Module.SaveVis:set(false)
+        coroutine.resume(Spin)
         if Module.CurrentData:get()[Module.CurrentKey:get()] == nil then
             -- Remove Async
-            
+            local s = DataStore:RemoveKey(Module.CurrentKey:get())
+            if s then
+                -- Saved
+                Module.OriginalData:set({[Module.CurrentKey:get()] = nil})
+                Module.SaveVis:set(not CompareTables(Module.CurrentData:get(),Module.OriginalData:get()))
+            else
+                -- Not Saved
+                Module.SaveVis:set(not CompareTables(Module.CurrentData:get(),Module.OriginalData:get()))
+            end
         else
-            DataStore:SaveKey(Module.CurrentKey:get(),Module.CurrentData:get()[Module.CurrentKey:get()])
+            local s = DataStore:SaveKey(Module.CurrentKey:get(),Module.CurrentData:get()[Module.CurrentKey:get()])
+            if s then
+                -- Saved
+                Module.OriginalData:set({[Module.CurrentKey:get()] = Module.CurrentData:get()[Module.CurrentKey:get()]})
+                Module.SaveVis:set(not CompareTables(Module.CurrentData:get(),Module.OriginalData:get()))
+            else
+                -- Not Saved
+                Module.SaveVis:set(not CompareTables(Module.CurrentData:get(),Module.OriginalData:get()))
+            end
         end
+        Module.IsSaving:set(false)
     end
 end
 

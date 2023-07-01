@@ -41,7 +41,9 @@ function Module:SaveKey(Key,Data)
     end)
     if not s then
         warn("Error saving data:",e)
+        return false
     end
+    return true
 end
 
 function Module:RemoveKey(Key)
@@ -50,7 +52,9 @@ function Module:RemoveKey(Key)
     end)
     if not s then
         warn("Error deleting data:",e)
+        return false
     end
+    return true
 end
 
 return Module

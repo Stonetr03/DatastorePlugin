@@ -363,7 +363,7 @@ local function TableUi(i,v,Tab,Update,SetParentSize,Start)
                             ReturnUi = NewUi
                         end
                         return ind, ReturnUi
-                    end,function() end)
+                    end,Fusion.cleanup)
                 }
             };
             Delete = New "ImageButton" {
@@ -545,7 +545,17 @@ function Module.MainUi()
                                 PaddingRight = UDim.new(0,5);
                             }
                         }
-                    }
+                    };
+                    Version = New "TextLabel" {
+                        BackgroundTransparency = 1;
+                        Size = UDim2.new(1,0,0,20);
+                        AnchorPoint = Vector2.new(0,1);
+                        Position = UDim2.new(0,3,1,0);
+                        Text = Config.Version;
+                        TextColor3 = Color3.fromRGB(122, 122, 122);
+                        TextSize = 15;
+                        TextXAlignment = Enum.TextXAlignment.Left;
+                    };
                 }
             };
             -- Data Frame
@@ -627,7 +637,13 @@ function Module.MainUi()
                                 BackgroundColor3 = Color3.new(1,1,1);
                                 Position = UDim2.new(1,-40,0,5);
                                 Size = UDim2.new(0,30,0,30);
-                                Image = "rbxassetid://11419703493";
+                                Image = Computed(function()
+                                    if State.IsSaving:get() == true then
+                                        return ""
+                                    else
+                                        return "rbxassetid://11419703493"
+                                    end
+                                end);
                                 ImageColor3 = Computed(function()
                                     if State.SaveVis:get() == true then
                                         return Color3.new(1,1,1);
@@ -637,7 +653,18 @@ function Module.MainUi()
                                 end);
                                 [Event "MouseButton1Up"] = function()
                                     State:SaveKey()
-                                end
+                                end;
+                                [Children] = New "ImageLabel" {
+                                    Size = UDim2.new(1,0,1,0);
+                                    BackgroundTransparency = 1;
+                                    Image = "rbxassetid://11963357970";
+                                    Visible = State.IsSaving;
+                                    Rotation = Computed(function()
+                                        local angle = State.SaveSpin:get() * 220 -- speed
+                                        angle %= 360
+                                        return -angle
+                                    end);
+                                }
                             };
                             Reload = New "ImageButton" {
                                 AnchorPoint = Vector2.new(1,0);
@@ -694,7 +721,7 @@ function Module.MainUi()
                                 end
                                 ScrollSize:set(25)
                                 return i, Ui
-                            end,function() end)
+                            end,Fusion.cleanup)
                         }
                     };
                     Blackout = New "TextLabel" {
