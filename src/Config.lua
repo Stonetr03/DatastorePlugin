@@ -20,5 +20,5 @@ return {
         table = Color3.fromRGB(156, 156, 156);
         ["nil"] = Color3.fromRGB(156, 156, 156);
     };
-    Version = "v1.1.0"
+    Version = "v1.2.0"
 }
